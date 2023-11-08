@@ -1,9 +1,9 @@
-{{#each postData as |posts| }}
-<div class="row align-center mb-5">
-  <div class="col-md-6">
+{{#each posts as |post| }}
+<div class="blog">
+  <div>
     <h2>{{post.title}} {{post.user}}{{post.date}}</h2>
   </div>
-  <div class="col-md-6">
+  <div>
     <p>{{post.description}}"</p>
   </div>
   <button id="comment">Comment</button>
