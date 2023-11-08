@@ -28,4 +28,5 @@ router.get('*',async (req, res)=> {
   const posts = dbPosts.map((post) => post.get({plain: true}));
   res.render('homepage', {posts} );
 })
+
 module.exports = router;

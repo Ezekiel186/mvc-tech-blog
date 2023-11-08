@@ -3,9 +3,14 @@ const { Posts } = require('../../models');
 
 router.post('/', async (req, res) => {
   try {
+    const title = req.body.title;
+    const description = req.body.description;
+    const user_id = req.session.user_id;
+
     const postData = await Posts.create({
-      ...req.body,
-      user_id: req.session.user_id,
+      title: title,
+      description: description,
+      user_id: user_id,
     });
 
     res.status(200).json(postData);
@@ -16,42 +21,30 @@ router.post('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
-    const postData = await Posts.destroy({
+    const postId = req.params.id;
+    const user_id = req.session.user_id;
+
+    const post = await Posts.findOne({
       where: {
-        id: req.params.id,
-        user_id: req.session.user_id,
+        id: postId,
+        user_id: user_id,
       },
     });
 
-    if (!postData) {
-      res.status(404).json({ message: 'No posts found with this id!' });
-      return;
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found or you do not have permission to delete it.' });
     }
 
-    res.status(200).json(postData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-router.get('/:id', async (req, res) => {
-  try {
-    const postData = await Posts.findOne({
+    await Posts.destroy({
       where: {
-        id: req.params.id,
+        id: postId,
       },
     });
 
-    if (!postData) {
-      res.status(404).json({ message: 'No posts found with this id!' });
-      return;
-    }
-
-    const post = postData.get({plain: true});
-
-    res.render('post', {post});
+    res.status(204).send(); 
   } catch (err) {
-    res.status(500).json(err);
+    console.error(err);
+    res.status(500).json({ message: 'An error occurred while deleting the post.' });
   }
 });
 

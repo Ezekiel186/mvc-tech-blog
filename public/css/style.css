@@ -1,3 +1,7 @@
 .blog {
     background-color: antiquewhite;
 }
+
+.hide {
+    display: none;
+}
